@@ -1,0 +1,51 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+
+body {  
+   
+    margin-bottom: 60px;
+}
+
+.navbar{
+    opacity: 1;
+}
+
+.showcase-start {
+    background: url(/images/Almedal_IMG_0263_SAJO_1920x1080-1920x1280.jpg) center center no-repeat;
+    width: 100vw;
+    height: 60vh;
+    padding: 10px;
+    display: flex;
+    align-items: center;       
+}
+
+.ags-motto {
+    
+    background-color: #f3f3f3;
+    margin: auto;
+    width: 50%;
+    min-width: 300px;
+    height: 35%;
+    border: 1px solid #008cba;
+    padding: 10px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.9;
+    text-align: center;
+}
+

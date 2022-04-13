@@ -1,0 +1,116 @@
+﻿@model AlmedalGameStore.Models.ViewModels.ProductVM
+@*Vi vill fetcha product properties som vi skapar här
+    om man inte passar något value inuti sin controller som t.ex. create så kan man binda sin vy med model
+    som är baseread på datan man hämtar från sidan med hjälp av tag-helpers
+*@
+@*entype låter oss uppploada bilder*@
+<form method="post" asp-action="Upsert" enctype="multipart/form-data">
+    <input asp-for="Product.Id" hidden />
+    <input asp-for="Product.ImageUrl" hidden />
+    <div class="row">
+        <div class="col-10">
+            <div class="col-12 pb-2">
+
+
+                <h2 class="text-primary">@(Model.Product.Id!=0?"Uppdatera": "Skapa") Produkt</h2>
+                <hr />
+            </div>
+            @*<div asp-validation-summary="All"></div>*@
+            <div class="mb-3">
+                <label asp-for="Product.Title"></label>
+                <input asp-for="Product.Title" class="form-control" />
+                <span asp-validation-for="Product.Title" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Product.Description"></label>
+                <textarea asp-for="Product.Description" rows="3" class="form-control"></textarea>
+                <span asp-validation-for="Product.Description" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Product.Price"></label>
+                <input asp-for="Product.Price" class="form-control" />
+                <span asp-validation-for="Product.Price" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3 col-6">
+                <label asp-for="Product.SystemReq"></label>
+                <input asp-for="Product.SystemReq" class="form-control" />
+                <span asp-validation-for="Product.SystemReq" class="text-danger"></span>
+            </div>
+            <div class="mb-3 col-6">
+                <label asp-for="Product.Publisher"></label>
+                <input asp-for="Product.Publisher" class="form-control" />
+                <span asp-validation-for="Product.Publisher" class="text-danger"></span>
+            </div>
+            <div class="mb-3 col-6">
+                <label asp-for="Product.ReleaseDate"></label>
+                <input asp-for="Product.ReleaseDate" class="form-control" />
+                <span asp-validation-for="Product.ReleaseDate" class="text-danger"></span>
+            </div>
+            <div class="mb-3 col-6">
+                <label asp-for="Product.PgRating"></label>
+                <input asp-for="Product.PgRating" class="form-control" />
+                <span asp-validation-for="Product.PgRating" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Product.ImageUrl"></label>
+                <input type="file" id="uploadBox" name="file" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label asp-for="Product.GenreId"></label>
+                <select asp-for="Product.GenreId" asp-items="@Model.GenreList" class="form-select">
+                    <option disabled selected>--Välj Genre--</option>
+                </select>
+                <span asp-validation-for="Product.GenreId" class="text-danger"></span>
+
+            </div>
+            <div class="col-12">
+                @if (Model.Product.Id != 0)
+                {
+                    <button type="submit" class="btn btn-primary" style="width:150px">Uppdatera</button>
+                }
+                else
+                {
+                    <button type="submit" onclick="return ValidateInput()" class="btn btn-primary" style="width:150px">Skapa</button>
+                }
+
+                <a asp-controller="Product" asp-action="Index" class="btn btn-secondary" style="width:150px">
+                    Bakåt
+                </a>
+            </div>
+        </div>
+        <div class="col-2 pt-4">
+            <img src="@Model.Product.ImageUrl"
+                 width="100%" style="border-bottom-left-radius:5px; solid #bbb9b9" />
+        </div>
+
+    </div>
+
+    <div class="border p-3 mt-4 row">
+    </div>
+</form>
+
+
+@*Gör att alla validations görs på klienten*@
+@section Scripts{
+    @*added partial view (Client side validation)*@
+<partial name="_ValidationScriptsPartial" />
+}
+<script>
+      function ValidateInput(){
+            if(document.getElementById("uploadBox").value==""){
+                Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: 'Du måste ladda upp en bild!',
+
+    });
+    return false;
+            }
+            return true;
+        }
+</script>
+
+
+
