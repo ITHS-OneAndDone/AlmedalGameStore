@@ -13,9 +13,7 @@ html {
   min-height: 100%;
 }
 
-
-body {  
-   
+body {    
     margin-bottom: 60px;
 }
 
@@ -24,12 +22,14 @@ body {
 }
 
 .showcase-start {
-    background: url(/images/Almedal_IMG_0263_SAJO_1920x1080-1920x1280.jpg) center center no-repeat;
-    width: 100vw;
-    height: 60vh;
-    padding: 10px;
     display: flex;
-    align-items: center;       
+    background: url(/images/ags-background.jpg) top center no-repeat; 
+    max-width: 100%;
+    height: 40vh;
+    background-size: 100%;
+    padding: 10px;    
+    align-items: center;
+    opacity: 0.9;
 }
 
 .ags-motto {
@@ -44,8 +44,43 @@ body {
     border-radius: 5px;
     display: flex;
     align-items: center;
-    justify-content: center;
-    opacity: 0.9;
+    justify-content: center;    
+    opacity: 0;
     text-align: center;
 }
+
+.ags-motto:hover {
+    opacity: 0.6;
+}
+
+.product-card {
+    border: 0px;
+    border-radius: 5px;
+}
+
+.product-card:hover {          
+    border-radius: 5px;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+.navbar-secondary {
+    position: relative;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    -ms-flex-align: center;
+    align-items: center;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    padding-top: 0rem;
+    padding-bottom: 0rem;    
+}
+
+.nav-item{
+    padding: 0;
+    margin: 0;
+}
+
+
 
