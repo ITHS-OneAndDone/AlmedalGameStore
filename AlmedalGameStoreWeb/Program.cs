@@ -1,10 +1,12 @@
+using AlemedalGameStore.Utility;
 using AlmedalGameStore.DataAccess;
 using AlmedalGameStore.DataAccess.GenericRepository;
 using AlmedalGameStore.DataAccess.GenericRepository.IGenericRepository;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
-using AlemedalGameStore.Utility;
+using Microsoft.Azure.KeyVault;
+using Microsoft.Azure.Services.AppAuthentication;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,9 +14,15 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 //Det s�ger att vi anv�nder SQL server och h�mtar connectionstring i appSettings med hj�lp av DefaultConnection
 //inuti ett block som heter ConnectionStrings
-builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(
-    builder.Configuration.GetConnectionString("DefaultConnection")
-    ));
+var secretUri = builder.Configuration.GetSection("KeyVaultSecrets:SqlConnection").Value;
+
+var KeyVaultToken = new AzureServiceTokenProvider().KeyVaultTokenCallback;
+
+var KeyVaultClient = new KeyVaultClient(new KeyVaultClient.AuthenticationCallback(KeyVaultToken));
+
+var secret = await KeyVaultClient.GetSecretAsync(secretUri);
+
+builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(secret.Value));
 builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddDefaultTokenProviders()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddSingleton<IEmailSender, EmailSender>();
