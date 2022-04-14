@@ -108,7 +108,6 @@ namespace AlmedalGameStoreWeb.Areas.Guest.Controllers
                 _unitOfWork.Cart.Remove(cart);
             }
 
-            // ToDo: Implementera tömning av kundvagn
             
             _unitOfWork.Save();
 
