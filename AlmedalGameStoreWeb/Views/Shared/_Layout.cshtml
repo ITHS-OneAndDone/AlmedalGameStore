@@ -19,15 +19,15 @@
         <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
 
             <div class="container">
-                <a class="navbar-brand" asp-area="Guest" asp-controller="Home" asp-action="Index">
+                <a class="navbar-brand" asp-area="Customer" asp-controller="Home" asp-action="Index">
                     <img src="\images\plain_logo_nobg.png" alt="AGS Logo" width="60" height="60"><img src="\images\AGS_text_nobg.png" alt="AGS text" width="120" height="60">
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor02"
                         aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-
-
+@*                <a class="nav-link" asp-area="Customer" asp-controller="Home" asp-action="Index">Home</a>
+*@
                 <div class="collapse navbar-collapse" id="navbarColor02">
                     
                     <form class="input-group">
@@ -61,26 +61,6 @@
                 </button>
 
 
-                <div class="collapse navbar-collapse" id="navbarColor02">
-                    <ul class="navbar-nav me-auto">
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="Guest" asp-controller="Home" asp-action="Index">Hem</a>
-                        </li>
-                        @*asp-area sätter vem som har tillgång till den vyn*@
-                        <li class="nav-item">
-                        </li>
-
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"
-                               aria-haspopup="true" aria-expanded="false">ADMIN</a>
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item" asp-area="Admin" asp-controller="Genre"
-                                   asp-action="Index">Genre</a>
-                                <a class="dropdown-item" asp-area="Admin" asp-controller="Product"
-                                   asp-action="Index">Produkt</a>
-                            </div>
-                        </li>
-                    </ul>
                      <div class="collapse navbar-collapse" id="navbarColor02">
                     <ul class="navbar-nav me-auto">
                         <li class="nav-item">
@@ -95,9 +75,7 @@
                             <div class="dropdown-menu">
                                 <a class="dropdown-item" asp-area="Admin" asp-controller="Genre" asp-action="Index">Genre</a>
                                 <a class="dropdown-item" asp-area="Admin" asp-controller="Product" asp-action="Index">Produkt</a>
-                                <a class="dropdown-item" asp-area="Admin" asp-controller="Order" asp-action="Index">Order</a>
-                                <div class="dropdown-divider"></div>
-                                @* <a class="dropdown-item" href="#">Separated link</a>*@
+                                <a class="dropdown-item" asp-area="Admin" asp-controller="Order" asp-action="Index">Order</a>                               
                             </div>
                         </li>
                         <li class="nav-item">
