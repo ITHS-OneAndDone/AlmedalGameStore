@@ -74,7 +74,8 @@ body {
     -ms-flex-pack: justify;
     justify-content: space-between;
     padding-top: 0rem;
-    padding-bottom: 0rem;    
+    padding-bottom: 0rem;
+    font-size: 10px;
 }
 
 .nav-item{
