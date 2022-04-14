@@ -1,0 +1,109 @@
+﻿@using System.Security.Cryptography.X509Certificates
+@model AlmedalGameStore.Models.ViewModels.CartVM
+
+<form method="post">
+    <br />
+    <div class="container">
+        <div class="card">
+            <div class="card-header bg-dark text-light ml-0">
+                <div class="row container">
+                    <div class="col-6  pt-2">
+
+                        <i class="bi bi-cart"></i> &nbsp;
+                        Orderöversikt
+                    </div>
+                    <div class="col-6 text-end">
+                        <a asp-area="Customer" asp-controller="Cart" asp-action="Index" class="btn btn-warning btn-sm">Till Kundkorg</a>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="container rounded p-1">
+
+                    <div class="row">
+                        <div class="col-lg-6 pb-3">
+                            <div class="col-9">
+                                Namn: <input asp-for="Order.Name" type="text" class="form-control" required>
+                                <span asp-validation-for="Order.Name" class="text-danger"></span>
+                            </div>
+                            <div class="col-9">
+                                Adress: <input asp-for="Order.Address" type="text" class="form-control" required>
+                                <span asp-validation-for="Order.Address" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-9">
+                                Postkod: <input asp-for="Order.PostalCode" type="text" class="form-control" required>
+                                <span asp-validation-for="Order.PostalCode" class="text-danger"></span>
+                            </div>
+                            <div class="col-9">
+                                Stad: <input asp-for="Order.Street" type="text" class="form-control" required>
+                                <span asp-validation-for="Order.Street" class="text-danger"></span>
+                            </div>
+                            <div class="col-9">
+                                Email: <input asp-for="Order.ApplicationUser.Email" type="text" class="form-control" required>
+                                <span asp-validation-for="Order.ApplicationUser.Email" class="text-danger"></span>
+                            </div>
+                            <div class="col-9">
+                                Mobilnummer: <input asp-for="Order.ApplicationUser.PhoneNumber" type="text" class="form-control" required>
+                                <span asp-validation-for="Order.ApplicationUser.PhoneNumber" class="text-danger"></span>
+                            </div>
+                            <div class="col-9 my-2">
+                                Fraktalternativ:
+                                <select class="form-control form-select" name="shipping-method">
+
+                                    <option value="1">Hämta i butik</option>
+                                    <option value="2">Skicka hem</option>
+                                </select>
+                            </div>
+
+
+                        </div>
+                        <div class="col-12 col-md-6 offset-md-6 col-lg-4 offset-lg-8 pr-4">
+                            <h5 class="d-flex align-items-center">
+                                <span class="text-info">Orderöversikt</span>
+                            </h5>
+                            <ul class="list-group mb-3">
+                                @foreach (var details in Model.ListCart)
+                                {
+                                    <li class="list-group-item d-flex justify-content-between bg-light">
+                                        <div>
+                                            <h6 class="my-0">@details.Product.Title</h6>
+                                            <small class="text-muted">st: @details.Count</small>
+                                        </div>
+                                        <span class="text-muted">@((details.Price * details.Count).ToString("c"))</span>
+                                    </li>
+                                }
+                                <li class="list-group-item d-flex justify-content-between bg-light">
+                                    <small class="text-info"> Total Pris</small>
+                                    <strong class="text-info">@Model.Order.OrderTotal.ToString("c")</strong>
+                                </li>
+
+
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-footer">
+                <div class="row">
+                    <div class="col-12 col-md-8 pt-2">
+                        <p style="color:green">
+                            Estimerat Leveransdatum :
+
+                            @DateTime.Now.AddDays(2).ToShortDateString() - @DateTime.Now.AddDays(5).ToShortDateString()
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <a id="cancel" asp-action="Index" class="btn btn-danger me-3">Gå tillbaka</a>
+                <button type="submit" asp-action="StripeCheckoutPOST" class="btn btn-success">Betala med kort</button>
+                <button type="submit" onclick="" class="btn btn-success">Betala på plats</button>
+            </div>
+        </div>
+    </div>
+
+
+</form>
+
