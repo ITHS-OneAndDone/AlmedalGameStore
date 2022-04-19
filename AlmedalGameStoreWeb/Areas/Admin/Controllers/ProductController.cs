@@ -7,12 +7,16 @@ using AlmedalGameStore.DataAccess.GenericRepository.IGenericRepository;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using AlmedalGameStore.Models.ViewModels;
 using Microsoft.AspNetCore.Hosting;
+using AlemedalGameStore.Utility;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AlmedalGameStoreWeb.Controllers
 {
     [Area("Admin")]
     //Dependecy Injections från program.cs använder vi databas objekt genom applicationDbContext
     //Vi vill att ApplicationDbContext ska arbeta med vår databas genom detta nedan
+
+    [Authorize(Roles = SD.Role_Admin)]
 
     public class ProductController : Controller
     {
