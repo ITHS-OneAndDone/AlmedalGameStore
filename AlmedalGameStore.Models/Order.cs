@@ -7,6 +7,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using static AlemedalGameStore.Utility.Enums;
 
 namespace AlmedalGameStore.Models
@@ -34,6 +35,9 @@ namespace AlmedalGameStore.Models
         [Required] public DateTime OrderDate { get; set; }
 
         [Required] public OrderStatus Status { get; set; }
+
+        [NotMapped]
+        public string OrderStatus { get; set; }
 
         public int ProductId { get; set; }
         [ForeignKey("ProductId")]
