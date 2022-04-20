@@ -7,11 +7,9 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 
 using AlemedalGameStore.Utility;
 using Stripe;
-
 using Microsoft.Azure.KeyVault;
 using Microsoft.Azure.Services.AppAuthentication;
 using Microsoft.EntityFrameworkCore;
-
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,7 +21,8 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(
     builder.Configuration.GetConnectionString("DefaultConnection")
     ));
-builder.Services.Configure<StripePay>(builder.Configuration.GetSection("Stripe"));
+
+builder.Services.Configure<StripePayment>(builder.Configuration.GetSection("Stripe"));
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddDefaultTokenProviders()
     .AddEntityFrameworkStores<ApplicationDbContext>();
