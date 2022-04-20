@@ -5,11 +5,13 @@ VisualStudioVersion = 17.1.32210.238
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AlmedalGameStoreWeb", "AlmedalGameStoreWeb\AlmedalGameStoreWeb.csproj", "{BE6EDB89-B571-4219-A180-8DE8C25DE034}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlmedalGameStore.DataAccess", "AlmedalGameStore.DataAccess\AlmedalGameStore.DataAccess.csproj", "{B7389EB6-E158-440D-89E0-3B7D15192FE5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AlmedalGameStore.DataAccess", "AlmedalGameStore.DataAccess\AlmedalGameStore.DataAccess.csproj", "{B7389EB6-E158-440D-89E0-3B7D15192FE5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlmedalGameStore.Models", "AlmedalGameStore.Models\AlmedalGameStore.Models.csproj", "{B1284210-5C0B-4868-957F-986FE5CC84A6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AlmedalGameStore.Models", "AlmedalGameStore.Models\AlmedalGameStore.Models.csproj", "{B1284210-5C0B-4868-957F-986FE5CC84A6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlemedalGameStore.Utility", "AlemedalGameStore.Utility\AlemedalGameStore.Utility.csproj", "{270D943A-38B0-4269-8ADC-FE779311E5C0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AlemedalGameStore.Utility", "AlemedalGameStore.Utility\AlemedalGameStore.Utility.csproj", "{270D943A-38B0-4269-8ADC-FE779311E5C0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{768C028C-58F8-427D-A6D7-61936529F986}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

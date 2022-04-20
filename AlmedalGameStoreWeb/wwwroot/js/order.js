@@ -15,7 +15,7 @@ function loadDataTable() {
             { "data": "orderStatus", "width": "15%" },
             { "data": "applicationUserId", "width": "15%" },
             {
-                "data": "id",
+                "data": "orderId",
                 "render": function (data) {
                     return `
                               <div class="w-75 btn-group" role="group">
