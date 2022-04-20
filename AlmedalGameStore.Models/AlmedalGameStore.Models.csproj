@@ -38,6 +38,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="6.0.2" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.1" />
+    <PackageReference Include="Stripe.net" Version="39.105.0" />
   </ItemGroup>
 
   <ItemGroup>
