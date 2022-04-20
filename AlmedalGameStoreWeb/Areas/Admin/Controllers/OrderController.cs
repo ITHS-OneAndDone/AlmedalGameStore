@@ -23,6 +23,21 @@ namespace AlmedalGameStoreWeb.Controllers
             return View();
         }
 
+        public IActionResult Details(Guid? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var ListOrder = _unitOfWork.Order.GetAll(o => o.OrderId == id, includeProperties: "Product");
+
+            if (ListOrder == null)
+            {
+                return NotFound();
+            }
+            return View(ListOrder.ToList());
+        }
+
 
         #region API CALLS
 
