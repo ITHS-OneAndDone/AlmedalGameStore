@@ -11,7 +11,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\images\products\" />
+    <None Include="wwwroot\images\AGS_logo.pdf" />
+    <None Include="wwwroot\images\products\33a5215c-7f2f-4581-a9b6-9d5e61bfb9d1.webp" />
+    <None Include="wwwroot\images\products\c0442696-b262-427d-919a-f6572859fdbb.webp" />
+    <None Include="wwwroot\images\products\e56073aa-1c60-49c6-a85a-05ca83a92666.webp" />
+    <None Include="wwwroot\images\products\shopping_cart.svg" />
   </ItemGroup>
 
 
@@ -20,6 +24,8 @@
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="6.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.RazorPages" Version="2.2.5" />
+    <PackageReference Include="Microsoft.Azure.KeyVault" Version="3.0.5" />
+    <PackageReference Include="Microsoft.Azure.Services.AppAuthentication" Version="1.6.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.3">
