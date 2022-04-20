@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace AlmedalGameStore.DataAccess.Migrations
 {
-    public partial class firstmigration : Migration
+    public partial class firstMig : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -248,6 +248,7 @@ namespace AlmedalGameStore.DataAccess.Migrations
                     PaymentMethod = table.Column<int>(type: "int", nullable: false),
                     ShippingMethod = table.Column<int>(type: "int", nullable: false),
                     OrderTotal = table.Column<double>(type: "float", nullable: false),
+                    SessionId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Amount = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>

@@ -9,6 +9,7 @@ using AlmedalGameStore.Models;
 using Stripe.Checkout;
 using AlmedalGameStore.DataAccess.GenericRepository;
 
+
 namespace AlmedalGameStoreWeb.Areas.Guest.Controllers
 {
 
@@ -118,7 +119,7 @@ namespace AlmedalGameStoreWeb.Areas.Guest.Controllers
                 //_unitOfWork.Cart.Remove(cart);
             }
             //STRIPE
-            var domian = "https://localhost:44324/";
+            var domian = "https://" + HttpContext.Request.Host.Value + "/";
             var options = new SessionCreateOptions
             {
                 //representerar alla items i cart (lineitems)
@@ -139,8 +140,7 @@ namespace AlmedalGameStoreWeb.Areas.Guest.Controllers
                         ProductData = new SessionLineItemPriceDataProductDataOptions
                         {
                             Name = item.Product.Title,
-                            Description = item.Product.Description
-
+                            Description = item.Product.Description,
 
                         },
 
@@ -148,8 +148,8 @@ namespace AlmedalGameStoreWeb.Areas.Guest.Controllers
                     Quantity = item.Count,
                 };
                 options.LineItems.Add(sessionLineItem);
-                
-            }
+
+            }  
             var service = new SessionService();
             Session session = service.Create(options);
             _unitOfWork.Order.UpdateStripeId(orderId, session.Id);
@@ -157,12 +157,6 @@ namespace AlmedalGameStoreWeb.Areas.Guest.Controllers
             Response.Headers.Add("Location", session.Url);
             return new StatusCodeResult(303);
 
-
-            //_unitOfWork.Save();
-
-            // ToDo: View funkar inte men det löser sig i och med stripe
-
-            //return View(CartVM);
         }
        
         public IActionResult StripeOrderConfirmation(Guid id)
@@ -177,21 +171,6 @@ namespace AlmedalGameStoreWeb.Areas.Guest.Controllers
             Response.Headers.Add("Location", session.Url);
             return View(id);
         }
-
-        [HttpPost]
-        public IActionResult CheckoutPOST()
-        {
-            //Stripe inställningar
-
-            //Swish inställningar
-
-            //Fysisk inställningar
-
-
-            return View();
-        }
-
-
 
 
         public IActionResult Plus(int cartId)
