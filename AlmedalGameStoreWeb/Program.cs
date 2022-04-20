@@ -4,11 +4,7 @@ using AlmedalGameStore.DataAccess.GenericRepository;
 using AlmedalGameStore.DataAccess.GenericRepository.IGenericRepository;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
-
-using AlemedalGameStore.Utility;
 using Stripe;
-using Microsoft.Azure.KeyVault;
-using Microsoft.Azure.Services.AppAuthentication;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
