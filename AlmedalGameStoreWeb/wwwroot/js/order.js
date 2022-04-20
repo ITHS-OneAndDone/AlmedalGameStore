@@ -12,10 +12,10 @@ function loadDataTable() {
         "columns": [
             { "data": "orderId", "width": "15%" },
             { "data": "orderDate", "width": "15%" },
-            { "data": "status", "width": "15%" },
+            { "data": "orderStatus", "width": "15%" },
             { "data": "applicationUserId", "width": "15%" },
             {
-                "data": "id",
+                "data": "orderId",
                 "render": function (data) {
                     return `
                               <div class="w-75 btn-group" role="group">
