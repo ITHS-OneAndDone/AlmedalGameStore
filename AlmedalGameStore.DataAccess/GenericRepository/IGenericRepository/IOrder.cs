@@ -11,7 +11,7 @@ namespace AlmedalGameStore.DataAccess.GenericRepository.IGenericRepository
     public interface IOrderRepository : IGenericRepository<Order>
     {
         void Update(Order obj);
-        //void UpdateStatus(int id/, string orderStatus, string? paymentStatus = null)/;
-        ////void UpdateStripePaymentId(int id, string sessionId, string paymentIntentId);
+        //void UpdateStatus(int id, Enum orderStatus, Enum? paymentStatus = null);
+        void UpdateStripeId(Guid id, string sessionId);
     }
 }

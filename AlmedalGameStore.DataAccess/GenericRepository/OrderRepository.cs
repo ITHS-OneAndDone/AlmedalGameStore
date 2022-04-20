@@ -28,7 +28,7 @@ namespace AlmedalGameStore.DataAccess.GenericRepository
             _db.Orders.Update(obj);
         }
 
-        //public void UpdateStatus(int id, string orderStatus, string? paymentStatus = null)
+        //public void UpdateStatus(int id, Enum orderStatus, Enum? paymentStatus = null)
         //{
         //    var orderFromDb = _db.Orders.FirstOrDefault(u => u.Id == id);
         //    if (orderFromDb != null)
@@ -36,17 +36,18 @@ namespace AlmedalGameStore.DataAccess.GenericRepository
         //        orderFromDb.OrderStatus = orderStatus;
         //        if (paymentStatus != null)
         //        {
-        //            orderFromDb.PaymentStatus = paymentStatus;
+        //            orderFromDb.Status = paymentStatus;
         //        }
 
         //    }
         //}
-        //public void UpdateStripePaymentId(int id, string sessionId, string paymentIntentId)
-        //{
-        //    var orderFromDb = _db.Orders.FirstOrDefault(u => u.Id == id);
-        //    orderFromDb.PaymentDate = DateTime.Now;
-        //    orderFromDb.SessionId = sessionId;
-        //    orderFromDb.PaymentIntentId = paymentIntentId;
-        //}
+        public void UpdateStripeId(Guid id, string sessionId)
+        {
+            var orderFromDb = _db.Orders.FirstOrDefault(u => u.OrderId == id);
+            //var orderFromDb = GetAll(u => u.OrderId == id);
+            
+            orderFromDb.SessionId = sessionId;
+
+        }
     }
 }
