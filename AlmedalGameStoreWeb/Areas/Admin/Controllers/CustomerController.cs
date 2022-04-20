@@ -1,29 +1,36 @@
 ﻿using AlmedalGameStore.DataAccess.GenericRepository.IGenericRepository;
 using Microsoft.AspNetCore.Mvc;
 
-namespace AlmedalGameStoreWeb.Areas.Admin.Controllers;
-public class CustomerController : Controller
+namespace AlmedalGameStoreWeb.Areas.Admin.Controllers
 {
-    private readonly IUnitOfWork _unitOfWork;
-
-    private readonly IWebHostEnvironment _hostEnviorment;
-
-    public CustomerController(IUnitOfWork unitOfWork, IWebHostEnvironment hostEnvironment)
+    [Area("Admin")]
+    public class CustomerController : Controller
     {
-        _unitOfWork = unitOfWork;
-        _hostEnviorment = hostEnvironment;
-    }
+        private readonly IUnitOfWork _unitOfWork;
 
-    public IActionResult Index()
-    {
-        return View();
-    }
+        private readonly IWebHostEnvironment _hostEnviorment;
 
-    [HttpGet]
-    public IActionResult GetAll()
-    {
-        var userList = _unitOfWork.ApplicationUser.GetAll(includeProperties: "Role");
+        public CustomerController(IUnitOfWork unitOfWork, IWebHostEnvironment hostEnvironment)
+        {
+            _unitOfWork = unitOfWork;
+            _hostEnviorment = hostEnvironment;
+        }
 
-        return Json(new { data = userList });
+        public IActionResult Index()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult GetAll()
+        {
+            var userList = _unitOfWork.ApplicationUser.GetAll();
+            foreach (var grej in userList)
+            {
+                Console.WriteLine("grej");
+            }
+
+            return Json(new {data = userList});
+        }
     }
 }

@@ -53,6 +53,7 @@ namespace AlmedalGameStore.Models
         [Required] public ShippingMethod ShippingMethod { get; set; }
 
         [Required] public double OrderTotal { get; set; }
+        public string? SessionId { get; set; }
 
         public int Amount { get; set; }
 

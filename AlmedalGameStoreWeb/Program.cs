@@ -1,20 +1,29 @@
+using AlemedalGameStore.Utility;
 using AlmedalGameStore.DataAccess;
 using AlmedalGameStore.DataAccess.GenericRepository;
 using AlmedalGameStore.DataAccess.GenericRepository.IGenericRepository;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
+
 using AlemedalGameStore.Utility;
+using Stripe;
+using Microsoft.Azure.KeyVault;
+using Microsoft.Azure.Services.AppAuthentication;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 //Det s�ger att vi anv�nder SQL server och h�mtar connectionstring i appSettings med hj�lp av DefaultConnection
+
 //inuti ett block som heter ConnectionStrings
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(
     builder.Configuration.GetConnectionString("DefaultConnection")
     ));
+
+builder.Services.Configure<StripePayment>(builder.Configuration.GetSection("Stripe"));
+
 builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddDefaultTokenProviders()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddSingleton<IEmailSender, EmailSender>();
@@ -46,6 +55,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:SecretKey").Get<string>();
 app.UseAuthentication();
 
 app.UseAuthorization();
