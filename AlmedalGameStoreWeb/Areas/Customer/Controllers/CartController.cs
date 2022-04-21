@@ -9,6 +9,7 @@ using AlmedalGameStore.Models;
 using Stripe.Checkout;
 using AlmedalGameStore.DataAccess.GenericRepository;
 
+
 namespace AlmedalGameStoreWeb.Areas.Guest.Controllers
 {
 
@@ -96,73 +97,67 @@ namespace AlmedalGameStoreWeb.Areas.Guest.Controllers
 
     
 
-                foreach (var cart in ListCart)
+            foreach (var cart in ListCart)
+            {
+                Order order = new()
                 {
-                    Order order = new()
-                    {
-                        OrderId = orderId,
-                        ProductId = cart.ProductId,
-                        Price = cart.Product.Price,
-                        Amount = cart.Count,
-                        Address = CartVM.Order.Address,
-                        Name = CartVM.Order.Name,
-                        PostalCode = CartVM.Order.PostalCode,
-                        Street = CartVM.Order.Street,
-                        OrderDate = DateTime.Now,
-                        ApplicationUserId = claim.Value,
-                        PaymentMethod = Enums.PaymentMethod.CreditCard,
-                        Status = Enums.OrderStatus.Received
-                    };
-                    _unitOfWork.Order.Add(order);
-                    _unitOfWork.Cart.Remove(cart);
-                }
-
-                //STRIPE
-                var domian = "https://localhost:44324/";
-                var options = new SessionCreateOptions
-                {
-                    //representerar alla items i cart (lineitems)
-                    LineItems = new List<SessionLineItemOptions>()
-                    ,
-                    Mode = "payment",
-                    SuccessUrl = domian + $"customer/cart/StripeOrderConfirmation?id={orderId}",
-                    CancelUrl = domian + $"customer/cart/index",
+                    OrderId = orderId,
+                    ProductId = cart.ProductId,
+                    Price = cart.Product.Price,
+                    Amount = cart.Count,
+                    Address = CartVM.Order.Address,
+                    Name = CartVM.Order.Name,
+                    PostalCode = CartVM.Order.PostalCode,
+                    Street = CartVM.Order.Street,
+                    OrderDate = DateTime.Now,
+                    ApplicationUserId = claim.Value,
+                    PaymentMethod = Enums.PaymentMethod.CreditCard,
+                    Status = Enums.OrderStatus.Received
                 };
-                foreach (var item in ListCart)
+                _unitOfWork.Order.Add(order);
+                _unitOfWork.Save();
+                //_unitOfWork.Cart.Remove(cart);
+            }
+            //STRIPE
+            var domian = "https://" + HttpContext.Request.Host.Value + "/";
+            var options = new SessionCreateOptions
+            {
+                //representerar alla items i cart (lineitems)
+                LineItems = new List<SessionLineItemOptions>()
+              ,
+                Mode = "payment",
+                SuccessUrl = domian+$"customer/cart/StripeOrderConfirmation?id={orderId}",
+                CancelUrl = domian+$"customer/cart/index" ,
+            };
+            foreach(var item in ListCart)
+            {
+                var sessionLineItem = new SessionLineItemOptions
                 {
-                    var sessionLineItem = new SessionLineItemOptions
+                    PriceData = new SessionLineItemPriceDataOptions
                     {
-                        PriceData = new SessionLineItemPriceDataOptions
+                        UnitAmount = (long)(item.Product.Price * 100),
+                        Currency = "SEK",
+                        ProductData = new SessionLineItemPriceDataProductDataOptions
                         {
-                            UnitAmount = (long)(item.Product.Price * 100),
-                            Currency = "SEK",
-                            ProductData = new SessionLineItemPriceDataProductDataOptions
-                            {
-                                Name = item.Product.Title,
-                                Description = item.Product.Description
-
-                            },
+                            Name = item.Product.Title,
+                            Description = item.Product.Description,
 
                         },
-                        Quantity = item.Count,
-                    };
-                    options.LineItems.Add(sessionLineItem);
+                       
+                    },
+                    Quantity = item.Count,
+                };
+                options.LineItems.Add(sessionLineItem);
 
-                }
-                var service = new SessionService();
-                Session session = service.Create(options);
-                _unitOfWork.Order.UpdateStripeId(orderId, session.Id);
-                 
-                _unitOfWork.Save();
-                Response.Headers.Add("Location", session.Url);
-                return new StatusCodeResult(303);
-
-
-                //_unitOfWork.Save();
-
-                // ToDo: View funkar inte men det löser sig i och med stripe
-
-                //return View(CartVM);
+            }  
+            var service = new SessionService();
+            Session session = service.Create(options);
+            _unitOfWork.Order.UpdateStripeId(orderId, session.Id);
+            _unitOfWork.Save();
+            Response.Headers.Add("Location", session.Url);
+            return new StatusCodeResult(303);
+            return new StatusCodeResult(303);
+            //return View(CartVM);
         }
 
         public IActionResult StripeOrderConfirmation(Guid id)
@@ -210,7 +205,6 @@ namespace AlmedalGameStoreWeb.Areas.Guest.Controllers
 
             return View(CartVM);
         }
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -264,6 +258,7 @@ namespace AlmedalGameStoreWeb.Areas.Guest.Controllers
 
             return View();
         }
+
 
 
 
