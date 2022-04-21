@@ -230,7 +230,7 @@ namespace AlmedalGameStoreWeb.Areas.Guest.Controllers
                     OrderDate = DateTime.Now,
                     ApplicationUserId = claim.Value,
                     PaymentMethod = Enums.PaymentMethod.InStore,
-                    Status = Enums.OrderStatus.Started
+                    Status = Enums.OrderStatus.Received
                 };
                 _unitOfWork.Order.Add(order);
                 _unitOfWork.Cart.Remove(cart);
