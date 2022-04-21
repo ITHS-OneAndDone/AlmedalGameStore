@@ -1,4 +1,5 @@
 ﻿@page
+@using AlemedalGameStore.Utility
 @model RegisterModel
 @{
     ViewData["Title"] = "Register";
@@ -57,12 +58,15 @@
                 <label asp-for="Input.ConfirmPassword"></label>
                 <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
             </div>
+             @if (User.IsInRole(SD.Role_Admin))
+             {
              <div class="form-floating py-2 col-6">
 
                 <select asp-for="Input.Role" asp-items="@Model.Input.RoleList" class=form-select>
                 <option disabled selected>-Select Role-</option>
                 </select>
             </div>
+             }
             <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
         </form>
     </div>
