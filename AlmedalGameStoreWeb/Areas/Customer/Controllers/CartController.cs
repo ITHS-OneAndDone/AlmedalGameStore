@@ -143,7 +143,7 @@ namespace AlmedalGameStoreWeb.Areas.Guest.Controllers
                             Description = item.Product.Description,
 
                         },
-
+                       
                     },
                     Quantity = item.Count,
                 };
@@ -156,9 +156,10 @@ namespace AlmedalGameStoreWeb.Areas.Guest.Controllers
             _unitOfWork.Save();
             Response.Headers.Add("Location", session.Url);
             return new StatusCodeResult(303);
-
+            return new StatusCodeResult(303);
+            //return View(CartVM);
         }
-       
+
         public IActionResult StripeOrderConfirmation(Guid id)
         {
 
@@ -171,6 +172,95 @@ namespace AlmedalGameStoreWeb.Areas.Guest.Controllers
             Response.Headers.Add("Location", session.Url);
             return View(id);
         }
+
+
+
+        //Betala i butik vy
+        public IActionResult CashCheckoutViewGet()
+        {
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+
+            CartVM = new CartVM()
+            {
+                ListCart = _unitOfWork.Cart.GetAll(u => u.ApplicationUserId == claim.Value,
+                    includeProperties: "ApplicationUser,Product"),
+                Order = new()
+            };
+
+            CartVM.Order.ApplicationUser = _unitOfWork.ApplicationUser.GetFirstOrDefault(u => u.Id == claim.Value);
+            CartVM.Order.Name = CartVM.Order.ApplicationUser.Name;
+            CartVM.Order.Address = CartVM.Order.ApplicationUser.StreetAddress;
+            CartVM.Order.PostalCode = CartVM.Order.ApplicationUser.PostalCode;
+            //Stad - Saknas i Order? (Har en address , en street, är det samma?)
+            CartVM.Order.Street = CartVM.Order.ApplicationUser.City;
+            //Fraktmetod saknas applicationUser?
+
+            foreach (var cart in CartVM.ListCart)
+            {
+                cart.Price = GetPrice(cart.Count, cart.Product.Price);
+                CartVM.Order.OrderTotal += (cart.Price * cart.Count);
+            }
+
+
+            return View(CartVM);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult CashCeckoutPOST()
+        {
+            var orderId = Guid.NewGuid();
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+
+            var ListCart = _unitOfWork.Cart.GetAll(u => u.ApplicationUserId == claim.Value,
+                includeProperties: "Product,ApplicationUser");
+
+            foreach (var cart in ListCart)
+            {
+                Order order = new()
+                {
+                    OrderId = orderId,
+                    ProductId = cart.ProductId,
+                    Price = cart.Product.Price,
+                    Amount = cart.Count,
+                    Address = "Hämta i butik",
+                    Name = cart.ApplicationUser.Name,
+                    PostalCode = "-",
+                    Street = "-",
+                    OrderDate = DateTime.Now,
+                    ApplicationUserId = claim.Value,
+                    PaymentMethod = Enums.PaymentMethod.InStore,
+                    Status = Enums.OrderStatus.Started
+                };
+                _unitOfWork.Order.Add(order);
+                _unitOfWork.Save();
+                _unitOfWork.Cart.Remove(cart);
+            }
+
+            return View(CartVM);
+        }
+        
+       
+       
+
+
+        [HttpPost]
+        public IActionResult CheckoutPOST()
+        {
+            //Stripe inställningar
+
+            //Swish inställningar
+
+            //Fysisk inställningar
+
+
+            return View();
+        }
+
+
+
 
 
         public IActionResult Plus(int cartId)

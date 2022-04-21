@@ -49,15 +49,15 @@
                                 Mobilnummer: <input asp-for="Order.ApplicationUser.PhoneNumber" type="text" class="form-control" required>
                                 <span asp-validation-for="Order.ApplicationUser.PhoneNumber" class="text-danger"></span>
                             </div>
-                            <div class="col-9 my-2">
+                          @*  <div class="col-9 my-2">
                                 Fraktalternativ:
-                                <select class="form-control form-select" name="shipping-method">
-
-                                    <option value="1">Hämta i butik</option>
-                                    <option value="2">Skicka hem</option>
+                                <select asp-for="Order.ShippingMethod" class="form-control form-select" name="shipping-method">
+                                    <option>PickUpInStore</option>
+                                    <option>SendHome</option>
                                 </select>
-                            </div>
 
+                            </div>*@
+                          
 
                         </div>
                         <div class="col-12 col-md-6 offset-md-6 col-lg-4 offset-lg-8 pr-4">
@@ -79,8 +79,6 @@
                                     <small class="text-info"> Total Pris</small>
                                     <strong class="text-info">@Model.Order.OrderTotal.ToString("c")</strong>
                                 </li>
-
-
                             </ul>
                         </div>
                     </div>
@@ -100,8 +98,10 @@
             </div>
             <div class="col-md-4">
                 <a id="cancel" asp-action="Index" class="btn btn-danger me-3">Gå tillbaka</a>
-                <button type="submit" asp-action="Checkout" class="btn btn-success">Betala med kort</button>
-                <button type="submit" onclick="" class="btn btn-success">Betala på plats</button>
+
+                <button type="submit" asp-action="StripeCheckoutPOST" class="btn btn-success">Betala med kort</button>
+                <button type="submit" asp-controller="Cart"  asp-action="CashCheckoutViewGet" class="btn btn-success">Betala på plats</button>
+
             </div>
         </div>
     </div>
