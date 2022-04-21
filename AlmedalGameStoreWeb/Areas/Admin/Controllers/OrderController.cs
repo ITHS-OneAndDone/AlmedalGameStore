@@ -35,6 +35,12 @@ namespace AlmedalGameStoreWeb.Controllers
             {
                 return NotFound();
             }
+            double totalSum = 0;
+            foreach(Order o in ListOrder)
+            {
+                totalSum += o.Amount * o.Price;
+            }
+            ListOrder.ToList()[0].OrderTotal = totalSum;
             return View(ListOrder.ToList());
         }
 

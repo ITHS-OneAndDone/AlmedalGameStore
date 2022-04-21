@@ -40,7 +40,7 @@ namespace AlmedalGameStoreWeb.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-            var ListOrder = _unitOfWork.Order.GetAll(o => o.ApplicationUserId == id, includeProperties: "Product");
+            var ListOrder = _unitOfWork.Order.GetAll(o => o.ApplicationUserId == id, includeProperties: "ApplicationUser").AsQueryable().DistinctBy(o => o.OrderId);
 
             if (ListOrder.Count() == 0)
             {
