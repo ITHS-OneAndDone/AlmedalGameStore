@@ -23,6 +23,27 @@ namespace AlmedalGameStoreWeb.Controllers
             return View();
         }
 
+        public IActionResult Details(Guid? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var ListOrder = _unitOfWork.Order.GetAll(o => o.OrderId == id, includeProperties: "Product");
+
+            if (ListOrder == null)
+            {
+                return NotFound();
+            }
+            double totalSum = 0;
+            foreach(Order o in ListOrder)
+            {
+                totalSum += o.Amount * o.Price;
+            }
+            ListOrder.ToList()[0].OrderTotal = totalSum;
+            return View(ListOrder.ToList());
+        }
+
 
         #region API CALLS
 
@@ -30,6 +51,18 @@ namespace AlmedalGameStoreWeb.Controllers
         public IActionResult GetAll()
         {
             var orderList = _unitOfWork.Order.GetAll().AsQueryable().DistinctBy(o => o.OrderId);
+
+            foreach (var order in orderList)
+            {
+                order.OrderStatus = (int)order.Status switch
+                {
+                    0 => "Mottagen",
+                    1 => "Påbörjad",
+                    2 => "Skickad",
+                    _ => "Felstatus",
+                };
+            }
+            
             return Json(new { data = orderList });
         }
 

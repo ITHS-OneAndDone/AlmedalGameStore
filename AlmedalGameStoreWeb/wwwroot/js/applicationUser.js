@@ -7,19 +7,16 @@ $(document).ready(function () {
 function loadDataTable() {
     dataTable = $('#tableData').DataTable({
         "ajax": {
-            "url": "/Admin/Order/GetAll"
+            "url": "/Admin/Customer/GetAll"
         },
         "columns": [
-            { "data": "orderId", "width": "15%" },
-            { "data": "orderDate", "width": "15%" },
-            { "data": "orderStatus", "width": "15%" },
-            { "data": "applicationUserId", "width": "15%" },
+            { "data": "id", "width": "15%" },
             {
-                "data": "orderId",
+                "data": "id",
                 "render": function (data) {
                     return `
                               <div class="w-75 btn-group" role="group">
-                        <a href="/Admin/Order/Details?id=${data}"
+                        <a href="/Admin/Customer/Details?id=${data}"
                         class="btn btn-primary mx-2"> <i class="bi bi-pencil-square"></i> Details</a>
                     </div>
                            `
@@ -30,6 +27,3 @@ function loadDataTable() {
         ]
     });
 }
-
-
-

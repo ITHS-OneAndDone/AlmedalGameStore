@@ -118,6 +118,9 @@ namespace AlmedalGameStore.DataAccess.Migrations
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
+                    b.Property<string>("SessionId")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("ShippingMethod")
                         .HasColumnType("int");
 

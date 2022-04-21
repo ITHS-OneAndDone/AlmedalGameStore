@@ -7,6 +7,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using static AlemedalGameStore.Utility.Enums;
 
 namespace AlmedalGameStore.Models
@@ -35,6 +36,9 @@ namespace AlmedalGameStore.Models
 
         [Required] public OrderStatus Status { get; set; }
 
+        [NotMapped]
+        public string OrderStatus { get; set; }
+
         public int ProductId { get; set; }
         [ForeignKey("ProductId")]
         [ValidateNever]
@@ -49,6 +53,7 @@ namespace AlmedalGameStore.Models
         [Required] public ShippingMethod ShippingMethod { get; set; }
 
         [Required] public double OrderTotal { get; set; }
+        public string? SessionId { get; set; }
 
         public int Amount { get; set; }
 

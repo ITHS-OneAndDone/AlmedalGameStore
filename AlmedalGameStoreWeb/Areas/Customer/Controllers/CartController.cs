@@ -6,12 +6,15 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using AlemedalGameStore.Utility;
 using AlmedalGameStore.Models;
+using Stripe.Checkout;
+using AlmedalGameStore.DataAccess.GenericRepository;
+
 
 namespace AlmedalGameStoreWeb.Areas.Guest.Controllers
 {
 
-   [Area("Customer")]
-   [Authorize]
+    [Area("Customer")]
+    [Authorize]
     //[AllowAnonymous]
     public class CartController : Controller
     {
@@ -26,7 +29,7 @@ namespace AlmedalGameStoreWeb.Areas.Guest.Controllers
             _unitOfWork = unitOfWork;
         }
 
-     
+
         public IActionResult Index()
         {
             var claimsIdentity = (ClaimsIdentity)User.Identity;
@@ -64,7 +67,7 @@ namespace AlmedalGameStoreWeb.Areas.Guest.Controllers
             CartVM.Order.PostalCode = CartVM.Order.ApplicationUser.PostalCode;
             //Stad - Saknas i Order? (Har en address , en street, är det samma?)
             CartVM.Order.Street = CartVM.Order.ApplicationUser.City;
-           //Fraktmetod saknas applicationUser?
+            //Fraktmetod saknas applicationUser?
 
             foreach (var cart in CartVM.ListCart)
             {
@@ -77,15 +80,22 @@ namespace AlmedalGameStoreWeb.Areas.Guest.Controllers
         }
 
         [HttpPost]
+        [ActionName("Checkout")]
         [ValidateAntiForgeryToken]
         public IActionResult StripeCheckoutPOST()
         {
+           
+
             var orderId = Guid.NewGuid();
             var claimsIdentity = (ClaimsIdentity)User.Identity;
             var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
 
             var ListCart = _unitOfWork.Cart.GetAll(u => u.ApplicationUserId == claim.Value,
                 includeProperties: "Product");
+          
+
+
+    
 
             foreach (var cart in ListCart)
             {
@@ -102,34 +112,133 @@ namespace AlmedalGameStoreWeb.Areas.Guest.Controllers
                     OrderDate = DateTime.Now,
                     ApplicationUserId = claim.Value,
                     PaymentMethod = Enums.PaymentMethod.CreditCard,
-                    Status = Enums.OrderStatus.Started
+                    Status = Enums.OrderStatus.Received
                 };
                 _unitOfWork.Order.Add(order);
-                _unitOfWork.Cart.Remove(cart);
+                _unitOfWork.Save();
+                //_unitOfWork.Cart.Remove(cart);
+            }
+            //STRIPE
+            var domian = "https://" + HttpContext.Request.Host.Value + "/";
+            var options = new SessionCreateOptions
+            {
+                //representerar alla items i cart (lineitems)
+                LineItems = new List<SessionLineItemOptions>()
+              ,
+                Mode = "payment",
+                SuccessUrl = domian+$"customer/cart/StripeOrderConfirmation?id={orderId}",
+                CancelUrl = domian+$"customer/cart/index" ,
+            };
+            foreach(var item in ListCart)
+            {
+                var sessionLineItem = new SessionLineItemOptions
+                {
+                    PriceData = new SessionLineItemPriceDataOptions
+                    {
+                        UnitAmount = (long)(item.Product.Price * 100),
+                        Currency = "SEK",
+                        ProductData = new SessionLineItemPriceDataProductDataOptions
+                        {
+                            Name = item.Product.Title,
+                            Description = item.Product.Description,
+
+                        },
+                       
+                    },
+                    Quantity = item.Count,
+                };
+                options.LineItems.Add(sessionLineItem);
+
+            }  
+            var service = new SessionService();
+            Session session = service.Create(options);
+            _unitOfWork.Order.UpdateStripeId(orderId, session.Id);
+            _unitOfWork.Save();
+            Response.Headers.Add("Location", session.Url);
+            return new StatusCodeResult(303);
+        }
+
+        public IActionResult StripeOrderConfirmation(Guid id)
+        {
+
+            Order order = _unitOfWork.Order.GetFirstOrDefault(u => u.OrderId == id);
+            var service = new SessionService();
+            Session session = service.Get(order.SessionId);
+            List<Cart> carts = _unitOfWork.Cart.GetAll(u => u.ApplicationUserId == order.ApplicationUserId).ToList();
+            _unitOfWork.Cart.RemoveRange(carts);
+            _unitOfWork.Save();
+            Response.Headers.Add("Location", session.Url);
+            return View(id);
+        }
+
+
+
+        //Betala i butik vy
+        public IActionResult CashCheckoutViewGet()
+        {
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+
+            CartVM = new CartVM()
+            {
+                ListCart = _unitOfWork.Cart.GetAll(u => u.ApplicationUserId == claim.Value,
+                    includeProperties: "ApplicationUser,Product"),
+                Order = new()
+            };
+
+            CartVM.Order.ApplicationUser = _unitOfWork.ApplicationUser.GetFirstOrDefault(u => u.Id == claim.Value);
+            CartVM.Order.Name = CartVM.Order.ApplicationUser.Name;
+            CartVM.Order.Address = CartVM.Order.ApplicationUser.StreetAddress;
+            CartVM.Order.PostalCode = CartVM.Order.ApplicationUser.PostalCode;
+            //Stad - Saknas i Order? (Har en address , en street, är det samma?)
+            CartVM.Order.Street = CartVM.Order.ApplicationUser.City;
+            //Fraktmetod saknas applicationUser?
+
+            foreach (var cart in CartVM.ListCart)
+            {
+                cart.Price = GetPrice(cart.Count, cart.Product.Price);
+                CartVM.Order.OrderTotal += (cart.Price * cart.Count);
             }
 
-            // ToDo: Implementera tömning av kundvagn
-            
-            _unitOfWork.Save();
-
-            // ToDo: View funkar inte men det löser sig i och med stripe
 
             return View(CartVM);
         }
 
         [HttpPost]
-        public IActionResult CheckoutPOST()
+        [ValidateAntiForgeryToken]
+        public IActionResult CashCeckoutPOST()
         {
-            //Stripe inställningar
+            var orderId = Guid.NewGuid();
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
 
-            //Swish inställningar
+            var ListCart = _unitOfWork.Cart.GetAll(u => u.ApplicationUserId == claim.Value,
+                includeProperties: "Product,ApplicationUser");
 
-            //Fysisk inställningar
+            foreach (var cart in ListCart)
+            {
+                Order order = new()
+                {
+                    OrderId = orderId,
+                    ProductId = cart.ProductId,
+                    Price = cart.Product.Price,
+                    Amount = cart.Count,
+                    Address = "Hämta i butik",
+                    Name = cart.ApplicationUser.Name,
+                    PostalCode = "-",
+                    Street = "-",
+                    OrderDate = DateTime.Now,
+                    ApplicationUserId = claim.Value,
+                    PaymentMethod = Enums.PaymentMethod.InStore,
+                    Status = Enums.OrderStatus.Received
+                };
+                _unitOfWork.Order.Add(order);
+                _unitOfWork.Cart.Remove(cart);
+                _unitOfWork.Save();                
+            }
 
-
-            return View();
+            return View("CashCheckoutPOST");
         }
-
 
 
 

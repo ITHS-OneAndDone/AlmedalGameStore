@@ -1,0 +1,60 @@
+﻿@model List<Order>
+<form method="post" asp-action="Edit">
+    <div class"border p-3 mt-4">
+        <div class="row pb-2">
+            <h2 class="text-primary mt-4" style="text-align:center">Orderdetaljer</h2><hr />
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-4" style="border-right:solid; padding:16px">
+                    <h3 class="text-primary">Beställare</h3><hr/>
+                    <label><b>Namn</b>: @Model[0].Name</label><br />
+                    <label class="mt-2"><b>Adress</b>: @Model[0].Address</label><br/>
+                    <label><b>Postnummer</b>: @Model[0].PostalCode</label><br />
+                    <label><b>Stad</b>: @Model[0].Street</label><br />
+                    <label class="mt-2"><b>Datum</b>: @Model[0].OrderDate.ToString("yyyy-MM-dd HH:mm")</label><br />
+                    <label class="mt-3"><b>Betalmetod</b>: @Model[0].PaymentMethod</label><br />
+                    <label><b>Status</b>: @Model[0].Status</label><br/>
+                    <a asp-controller="Order" asp-action="Index" class="btn btn-secondary mt-5" style="width:150px">Tillbaka</a>
+                </div>
+
+                <div class="col-5 card-body">
+                    <h3 class="text-primary">Produkter</h3><hr/>
+                    @foreach (Order o in Model)
+                    {
+                        <div class="row">
+                            <div class="d-none d-lg-block col-2 text-center py-2">
+                                <a asp-area="Customer" asp-controller="Home" asp-action="Details" asp-route-productId="@o.Product.Id"><img src="@o.Product.ImageUrl" class="rounded" width="100%" /></a>
+                            </div>
+                            <div class="col-5 pt-md-3">
+                                <a asp-area="Customer" asp-controller="Home" asp-action="Details" asp-route-productId="@o.Product.Id" style="Text-decoration:none; color:inherit"><h5><strong>@o.Product.Title</strong></h5></a>
+                            </div>
+                            <div class="col-12  col-lg-5 text-center">
+                                <div class="col-4 text-md-right pt-4">
+                                    <h6><strong>@o.Product.Price.ToString("N2") kr<span class="text-muted">&nbsp x &nbsp</span> @o.Amount </strong></h6>
+                                </div>
+                            </div>
+                        </div>
+                        <hr />
+                    }
+                    <div class="row">
+                        <div class="col-12 col-md-6 offset-md-6 col-lg-4 offset-lg-8 pr-4">
+                            <ul class="list-group">
+                                <li class="list-group-item d-flex justify-content-between bg-light">
+                                    <span class="text-info"> Total (KR)</span>
+                                    <strong class="text-info">@Model[0].OrderTotal.ToString("N2") kr</strong>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> 
+    </div>
+</form>
+
+@*Gör att alla validations görs på klienten*@
+@section Scripts{
+    @*added partial view (Client side validation)*@
+<partial name="_ValidationScriptsPartial" />
+}
