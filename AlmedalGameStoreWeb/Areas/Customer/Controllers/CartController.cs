@@ -9,6 +9,7 @@ using AlmedalGameStore.Models;
 using Stripe.Checkout;
 using AlmedalGameStore.DataAccess.GenericRepository;
 
+
 namespace AlmedalGameStoreWeb.Areas.Guest.Controllers
 {
 
@@ -118,7 +119,7 @@ namespace AlmedalGameStoreWeb.Areas.Guest.Controllers
                 //_unitOfWork.Cart.Remove(cart);
             }
             //STRIPE
-            var domian = "https://localhost:44324/";
+            var domian = "https://" + HttpContext.Request.Host.Value + "/";
             var options = new SessionCreateOptions
             {
                 //representerar alla items i cart (lineitems)
@@ -139,32 +140,24 @@ namespace AlmedalGameStoreWeb.Areas.Guest.Controllers
                         ProductData = new SessionLineItemPriceDataProductDataOptions
                         {
                             Name = item.Product.Title,
-                            Description = item.Product.Description
-
+                            Description = item.Product.Description,
 
                         },
-
+                       
                     },
                     Quantity = item.Count,
                 };
                 options.LineItems.Add(sessionLineItem);
-                
-            }
+
+            }  
             var service = new SessionService();
             Session session = service.Create(options);
             _unitOfWork.Order.UpdateStripeId(orderId, session.Id);
             _unitOfWork.Save();
             Response.Headers.Add("Location", session.Url);
             return new StatusCodeResult(303);
-
-
-            //_unitOfWork.Save();
-
-            // ToDo: View funkar inte men det löser sig i och med stripe
-
-            //return View(CartVM);
         }
-       
+
         public IActionResult StripeOrderConfirmation(Guid id)
         {
 
@@ -178,19 +171,74 @@ namespace AlmedalGameStoreWeb.Areas.Guest.Controllers
             return View(id);
         }
 
-        [HttpPost]
-        public IActionResult CheckoutPOST()
+
+
+        //Betala i butik vy
+        public IActionResult CashCheckoutViewGet()
         {
-            //Stripe inställningar
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
 
-            //Swish inställningar
+            CartVM = new CartVM()
+            {
+                ListCart = _unitOfWork.Cart.GetAll(u => u.ApplicationUserId == claim.Value,
+                    includeProperties: "ApplicationUser,Product"),
+                Order = new()
+            };
 
-            //Fysisk inställningar
+            CartVM.Order.ApplicationUser = _unitOfWork.ApplicationUser.GetFirstOrDefault(u => u.Id == claim.Value);
+            CartVM.Order.Name = CartVM.Order.ApplicationUser.Name;
+            CartVM.Order.Address = CartVM.Order.ApplicationUser.StreetAddress;
+            CartVM.Order.PostalCode = CartVM.Order.ApplicationUser.PostalCode;
+            //Stad - Saknas i Order? (Har en address , en street, är det samma?)
+            CartVM.Order.Street = CartVM.Order.ApplicationUser.City;
+            //Fraktmetod saknas applicationUser?
+
+            foreach (var cart in CartVM.ListCart)
+            {
+                cart.Price = GetPrice(cart.Count, cart.Product.Price);
+                CartVM.Order.OrderTotal += (cart.Price * cart.Count);
+            }
 
 
-            return View();
+            return View(CartVM);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult CashCeckoutPOST()
+        {
+            var orderId = Guid.NewGuid();
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+
+            var ListCart = _unitOfWork.Cart.GetAll(u => u.ApplicationUserId == claim.Value,
+                includeProperties: "Product,ApplicationUser");
+
+            foreach (var cart in ListCart)
+            {
+                Order order = new()
+                {
+                    OrderId = orderId,
+                    ProductId = cart.ProductId,
+                    Price = cart.Product.Price,
+                    Amount = cart.Count,
+                    Address = "Hämta i butik",
+                    Name = cart.ApplicationUser.Name,
+                    PostalCode = "-",
+                    Street = "-",
+                    OrderDate = DateTime.Now,
+                    ApplicationUserId = claim.Value,
+                    PaymentMethod = Enums.PaymentMethod.InStore,
+                    Status = Enums.OrderStatus.Started
+                };
+                _unitOfWork.Order.Add(order);
+                _unitOfWork.Cart.Remove(cart);
+                _unitOfWork.Save();                
+            }
+
+            return View("CashCheckoutPOST");
+        }
 
 
 

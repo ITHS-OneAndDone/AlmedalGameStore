@@ -48,21 +48,13 @@ namespace AlmedalGameStoreWeb.Controllers
 
             foreach (var order in orderList)
             {
-                switch ((int)order.Status)
+                order.OrderStatus = (int)order.Status switch
                 {
-                    case 0:
-                        order.OrderStatus = "Mottagen";
-                        break;
-                    case 1:
-                        order.OrderStatus = "Påbörjad";
-                        break;
-                    case 2:
-                        order.OrderStatus = "Skickad";
-                        break;
-                    default:
-                        order.OrderStatus = "Felstatus";
-                        break;
-                }
+                    0 => "Mottagen",
+                    1 => "Påbörjad",
+                    2 => "Skickad",
+                    _ => "Felstatus",
+                };
             }
             
             return Json(new { data = orderList });
