@@ -1,5 +1,6 @@
 ﻿using AlmedalGameStore.DataAccess.GenericRepository.IGenericRepository;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace AlmedalGameStoreWeb.Areas.Admin.Controllers
 {
@@ -31,6 +32,21 @@ namespace AlmedalGameStoreWeb.Areas.Admin.Controllers
             }
 
             return Json(new {data = userList});
+        }
+
+        public IActionResult Details(string? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var ListOrder = _unitOfWork.Order.GetAll(o => o.ApplicationUserId == id, includeProperties: "Product");
+
+            if (ListOrder.Count() == 0)
+            {
+                return NotFound();
+            }
+            return View(ListOrder.ToList());
         }
     }
 }
