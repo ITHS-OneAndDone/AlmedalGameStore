@@ -156,8 +156,6 @@ namespace AlmedalGameStoreWeb.Areas.Guest.Controllers
             _unitOfWork.Save();
             Response.Headers.Add("Location", session.Url);
             return new StatusCodeResult(303);
-            return new StatusCodeResult(303);
-            //return View(CartVM);
         }
 
         public IActionResult StripeOrderConfirmation(Guid id)
@@ -235,31 +233,12 @@ namespace AlmedalGameStoreWeb.Areas.Guest.Controllers
                     Status = Enums.OrderStatus.Started
                 };
                 _unitOfWork.Order.Add(order);
-                _unitOfWork.Save();
                 _unitOfWork.Cart.Remove(cart);
+                _unitOfWork.Save();                
             }
 
-            return View(CartVM);
+            return View("CashCheckoutPOST");
         }
-        
-       
-       
-
-
-        [HttpPost]
-        public IActionResult CheckoutPOST()
-        {
-            //Stripe inställningar
-
-            //Swish inställningar
-
-            //Fysisk inställningar
-
-
-            return View();
-        }
-
-
 
 
 
