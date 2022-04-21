@@ -72,12 +72,12 @@
                                             <h6 class="my-0">@details.Product.Title</h6>
                                             <small class="text-muted">st: @details.Count</small>
                                         </div>
-                                        <span class="text-muted">@((details.Price * details.Count).ToString("c"))</span>
+                                        <span class="text-muted">@((details.Price * details.Count).ToString("N2")) kr</span>
                                     </li>
                                 }
                                 <li class="list-group-item d-flex justify-content-between bg-light">
                                     <small class="text-info"> Total Pris</small>
-                                    <strong class="text-info">@Model.Order.OrderTotal.ToString("c")</strong>
+                                    <strong class="text-info">@Model.Order.OrderTotal.ToString("N2") kr</strong>
                                 </li>
                             </ul>
                         </div>
