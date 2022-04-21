@@ -1,0 +1,38 @@
+﻿@model List<Order>
+<div class"border p-3 mt-4">
+    <div class="row pb-2">
+        <h2 class="text-primary mt-4" style="text-align:center">Kunddetaljer</h2><hr />
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-3" style="border-right:solid; padding:16px">
+                <h3 class="text-primary">Kund</h3><hr/>
+                <label><b>Namn</b>: @Model[0].ApplicationUser.Name</label><br />
+                <label class="mt-2"><b>Email: </b>: @Model[0].ApplicationUser.Email</label><br/>
+                <label class="mt-2"><b>Telefon: </b>: @Model[0].ApplicationUser.PhoneNumber</label><br/>
+                <a asp-controller="Customer" asp-action="Index" class="btn btn-secondary mt-5" style="width:150px">Tillbaka</a>
+            </div>
+
+            <div class="col-5 card-body">
+                <h3 class="text-primary">Ordrar</h3><hr/>
+                @foreach (Order o in Model)
+                {
+                    <div class="row">
+                        <div class="col-1.5">
+                            <label class="col-5">Order nr:</label>
+                            <label>&ensp;Datum:</label>
+                        </div>
+                        <div class="d-none d-lg-block col-5 py-2">
+                            <a asp-area="Admin" asp-controller="Order" asp-action="Details" asp-route-id="@o.OrderId" style="Text-decoration:none; color:inherit"><b>@o.OrderId</b></a>
+                        </div>
+                        <div class="col-sm py-2">
+                            <label>@o.OrderDate.ToString("yyyy-MM-dd HH:mm")</label>
+                        </div>
+                        
+                    </div>
+                    <hr />                    
+                }                
+            </div>
+        </div> 
+    </div>
+</div>
